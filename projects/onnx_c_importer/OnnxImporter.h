@@ -93,7 +93,7 @@ class GraphInfo {
 public:
   using InitializerMapT =
       Dict<std::string_view,
-           std::pair<const onnx::TensorProto &, onnx::TypeProto>>;
+           std::pair<std::reference_wrapper<const onnx::TensorProto>, onnx::TypeProto>>;
 
   GraphInfo(ModelInfo &modelInfo, const onnx::GraphProto &graphProto,
             bool topLevel = true)
@@ -109,18 +109,18 @@ public:
   /// an error will have been set.
   const onnx::TypeProto *FindTypeProtoForName(std::string_view name);
 
-  Dict<std::string_view, const onnx::ValueInfoProto &> &GetInputMap() {
+  Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> &GetInputMap() {
     return input_map_;
   }
-  const Dict<std::string_view, const onnx::ValueInfoProto &> &
+  const Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> &
   GetInputMap() const {
     return input_map_;
   }
 
-  Dict<std::string_view, const onnx::ValueInfoProto &> &GetOutputMap() {
+  Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> &GetOutputMap() {
     return output_map_;
   }
-  const Dict<std::string_view, const onnx::ValueInfoProto &> &
+  const Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> &
   GetOutputMap() const {
     return output_map_;
   }
@@ -134,10 +134,10 @@ private:
   const onnx::GraphProto &graph_proto_;
 
   InitializerMapT initializer_map_;
-  Dict<std::string_view, const onnx::ValueInfoProto &> value_info_map_;
-  Dict<std::string_view, const onnx::ValueInfoProto &> declared_input_map_;
-  Dict<std::string_view, const onnx::ValueInfoProto &> output_map_;
-  Dict<std::string_view, const onnx::ValueInfoProto &> input_map_;
+  Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> value_info_map_;
+  Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> declared_input_map_;
+  Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> output_map_;
+  Dict<std::string_view, std::reference_wrapper<const onnx::ValueInfoProto>> input_map_;
 
   bool is_top_level_;
 };

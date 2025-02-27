@@ -153,7 +153,7 @@ FailureOr<onnx::ModelProto> loadOnnxModel() {
     }
     fs::path tempInferredFile = tempDir / "inferred.onnx";
 
-    onnx::shape_inference::InferShapes(*inputFilenameArg, tempInferredFile,
+    onnx::shape_inference::InferShapes(*inputFilenameArg, tempInferredFile.string(),
                                        onnx::OpSchemaRegistry::Instance(),
                                        opts);
 

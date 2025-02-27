@@ -433,19 +433,19 @@ const onnx::TypeProto *GraphInfo::FindTypeProtoForName(std::string_view name) {
   {
     auto it = value_info_map_.find(name);
     if (it != value_info_map_.end()) {
-      return &it->second.type();
+      return &it->second.get().type();
     }
   }
   {
     auto it = output_map_.find(name);
     if (it != output_map_.end()) {
-      return &it->second.type();
+      return &it->second.get().type();
     }
   }
   {
     auto it = declared_input_map_.find(name);
     if (it != declared_input_map_.end()) {
-      return &it->second.type();
+      return &it->second.get().type();
     }
   }
   {
@@ -462,7 +462,7 @@ void GraphInfo::InitializerMapEmplace(const std::string_view &name,
                                       const onnx::TensorProto &tp) {
   initializer_map_.emplace(
       name,
-      std::pair<const onnx::TensorProto &, onnx::TypeProto>(
+      std::pair<std::reference_wrapper<const onnx::TensorProto>, onnx::TypeProto>(
           tp, MakeTensorTypeProto(onnx::TensorProto_DataType(tp.data_type()),
                                   tp.dims())));
 }
@@ -1086,7 +1086,7 @@ FailureOr<NodeImporter> NodeImporter::DefineFunction(GraphInfo &graphInfo,
   std::vector<MlirLocation> inputLocs;
   std::vector<MlirType> outputTypes;
   for (const auto &input : graphInfo.GetInputMap()) {
-    MlirType t = contextCache.ConvertTypeProto(&input.second.type());
+    MlirType t = contextCache.ConvertTypeProto(&input.second.get().type());
     if (mlirTypeIsNull(t)) {
       return failure;
     }
@@ -1096,7 +1096,7 @@ FailureOr<NodeImporter> NodeImporter::DefineFunction(GraphInfo &graphInfo,
                                             /*childLoc=*/{nullptr}));
   }
   for (const auto &output : graphInfo.GetOutputMap()) {
-    MlirType t = contextCache.ConvertTypeProto(&output.second.type());
+    MlirType t = contextCache.ConvertTypeProto(&output.second.get().type());
     if (mlirTypeIsNull(t)) {
       return failure;
     }

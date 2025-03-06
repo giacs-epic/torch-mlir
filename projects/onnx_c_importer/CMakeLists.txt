@@ -16,6 +16,7 @@ FetchContent_MakeAvailable(onnx)
 
 set(LLVM_REQUIRES_EH ON)
 set(LLVM_REQUIRES_RTTI ON)
+set(LLVM_PTHREAD_LIB OFF)
 
 
 add_llvm_executable(
